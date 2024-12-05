@@ -26,13 +26,13 @@ jobs:
       # Step 3: Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t vulnerable-python-app .
+          docker build -t vulnerable-python-app:${{ github.sha }} .
 
       # Step 4: Run Trivy scan using Trivy Action
       - name: Run Trivy scan
-        uses: aquasecurity/trivy-action@v0.3.0
+        uses: aquasecurity/trivy-action@0.28.0
         with:
-          image: vulnerable-python-app
+          image: vulnerable-python-app:${{ github.sha }}
           format: 'table'  # You can change to 'json' or 'html' for different output formats
           severity: 'HIGH,CRITICAL'  # Scan only for High and Critical vulnerabilities
           exit-code: 1  # Fail the build if vulnerabilities are found

@@ -1,0 +1,45 @@
+name: DevSecOps Pipeline with Trivy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  trivy_scan:
+    name: Run Trivy Security Scan on Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # Step 2: Set up Docker Buildx (optional for multi-platform builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Build Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t vulnerable-python-app .
+
+      # Step 4: Run Trivy scan using Trivy Action
+      - name: Run Trivy scan
+        uses: aquasecurity/trivy-action@v0.3.0
+        with:
+          image: vulnerable-python-app
+          format: 'table'  # You can change to 'json' or 'html' for different output formats
+          severity: 'HIGH,CRITICAL'  # Scan only for High and Critical vulnerabilities
+          exit-code: 1  # Fail the build if vulnerabilities are found
+
+      # Step 5: Upload the Trivy report (optional)
+      - name: Upload Trivy scan report
+        uses: actions/upload-artifact@v3
+        with:
+          name: trivy-scan-report
+          path: trivy-report.json

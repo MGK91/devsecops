@@ -1,0 +1,29 @@
+name: Trivy SAST Scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  trivy-sast:
+    name: Scan for vulnerabilities using Trivy (SAST)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install Trivy
+        run: |
+          curl -sSL https://github.com/aquasecurity/trivy/releases/download/v0.45.0/trivy_0.45.0_Linux-64bit.deb -o trivy.deb
+          sudo dpkg -i trivy.deb
+      - name: Run Trivy scan
+        run: trivy fs --severity HIGH,CRITICAL --format github --output trivy-report.json .
+      - name: Upload Trivy report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: trivy-report
+          path: trivy-report.json

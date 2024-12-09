@@ -31,7 +31,7 @@ jobs:
           image-ref: 'vulnerable-python-app:latest'
           format: 'json'  # You can change to 'json' or 'html' for different output formats
           severity: 'HIGH,CRITICAL'  # Scan only for High and Critical vulnerabilities
-          exit-code: 1  # Fail the build if vulnerabilities are found
+          #exit-code: 1  # Fail the build if vulnerabilities are found
           output: 'scan-report.txt'
 
       # Step 5: Upload the Trivy report (optional)

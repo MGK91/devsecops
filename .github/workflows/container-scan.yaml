@@ -29,7 +29,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: 'vulnerable-python-app:latest'
-          format: 'table'  # You can change to 'json' or 'html' for different output formats
+          format: 'json'  # You can change to 'json' or 'html' for different output formats
           severity: 'HIGH,CRITICAL'  # Scan only for High and Critical vulnerabilities
           exit-code: 1  # Fail the build if vulnerabilities are found
           output: 'scan-report.txt'
